@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Nana's Recipes</title>
+ 
+    
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/css/add_recipe.css" rel="stylesheet">
+    <script src="../static/js/jquery-3.1.0.min.js"></script>
+    <script src="../static/js/addRecipe.js"></script>
+
+  </head>
+ 
+  <body>
+ 
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+              <li role="presentation" class="active"><a href="/">Home</a></li>
+              <li role="presentation"><a href="#">Sign In</a></li>
+              <li role="presentation"><a href="submitRecipe">Submit New Recipe</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Nana's Recipes</h3>
+      </div>
+ 
+      <div class="jumbotron">
+        <h1>Submit New Recipe</h1>
+        <form class="form-signin">
+        <label for="recipeTitle" class="sr-only">Title</label>
+        <input type="text" name="recipeTitle" id="recipeTitle" class="form-control" placeholder="Recipe Name" required autofocus>
+        
+        <label for="recipeDescription" class="sr-only">Description</label>
+        <input type="text" name="recipeDescription" id="recipeDescription" class="form-control" placeholder="Description" required autofocus>
+        
+        <label for="recipeContributor" class="sr-only">Contributor</label>
+        <input type="text" name="recipeContributor" id="recipeContributor" class="form-control" placeholder="Contributor" required>
+         
+        <button id="btnSubmitRecipe" class="btn btn-lg btn-primary btn-block" type="button">Submit</button>
+      </form>
+      </div>
+ 
+       
+ 
+      <footer class="footer">
+        <p>&copy; Company 2015</p>
+      </footer>
+ 
+    </div>
+  </body>
+</html>

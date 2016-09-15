@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Nana's Recipes</title>
+ 
+    
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/css/add_recipe.css" rel="stylesheet">
+    <script src="../static/js/jquery-3.1.0.min.js"></script>
+
+  </head>
+ 
+  <body>
+ 
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+              <li role="presentation" class="active"><a href="/">Home</a></li>
+              <li role="presentation"><a href="#">Sign In</a></li>
+              <li role="presentation"><a href="submitRecipe">Submit New Recipe</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Nana's Recipes</h3>
+      </div>
+ 
+      <div class="jumbotron">
+		{% for recipe in data %}
+    		<h2><a href="/recipe/{{ recipe[0] }}">{{ recipe[1] }}</h2></a><br>{{ recipe[2] }}
+		{% endfor %}
+	  </div>
+ 
+       
+ 
+      <footer class="footer">
+        <p>&copy; Company 2015</p>
+      </footer>
+ 
+    </div>
+  </body>
+</html>
