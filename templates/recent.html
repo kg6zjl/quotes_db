@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Nana's Recipes</title>
+    <title>Ridiculous. Quotes. - "Let's Make Laughing Great Again!"</title>
  
     
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,22 +20,22 @@
           <ul class="nav nav-pills pull-right">
               <li role="presentation" class="active"><a href="/">Home</a></li>
               <li role="presentation"><a href="#">Sign In</a></li>
-              <li role="presentation"><a href="submitRecipe">Submit New Recipe</a></li>
+              <li role="presentation"><a href="submitQuote">Submit New Quote</a></li>
           </ul>
         </nav>
-        <h3 class="text-muted">Nana's Recipes</h3>
+        <h3 class="text-muted">Ridiculous. Quotes.</h3>
       </div>
  
       <div class="jumbotron">
-		{% for recipe in data %}
-    		<h2><a href="/recipe/{{ recipe[0] }}">{{ recipe[1] }}</h2></a><br>{{ recipe[2] }}
+		{% for quote in data %}
+    		<h2>{{ quote[1] }}</h2><br>{{ quote[2] }}
 		{% endfor %}
 	  </div>
  
        
  
       <footer class="footer">
-        <p>&copy; Company 2015</p>
+        <p>&copy; Nobody and Everybody 2016</p>
       </footer>
  
     </div>
