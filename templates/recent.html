@@ -30,7 +30,7 @@
  
       <div class="jumbotron">
 		{% for quote in data %}
-    		<h2>{{ quote[1] }}</h2> - {{ quote[2] }}<br>
+    		<h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
 		{% endfor %}
 	  </div>
  
