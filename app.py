@@ -25,7 +25,7 @@ mysql.init_app(app)
 def main():
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 order by id ASC LIMIT 30;")
+	query = ("select * from quotes.quotes where private = 0 order by id ASC;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
@@ -77,16 +77,6 @@ def random():
 	conn = mysql.connect()
 	cursor = conn.cursor()
 	query = ("select * from quotes.quotes where private = 0 ORDER BY RAND() limit 1;")
-	cursor.execute(query)
-	data = cursor.fetchall()
-	
-	return render_template('recent.html',data=(data))
-
-@app.route("/")
-def main():
-	conn = mysql.connect()
-	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 order by id ASC;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
