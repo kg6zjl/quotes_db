@@ -50,11 +50,21 @@ def recent():
 	
 	return render_template('recent.html',data=(data))
 
+@app.route("/random")
+def random():
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	query = ("select * from quotes.quotes where private = 0 order by ORDER BY RAND() limit 1;")
+	cursor.execute(query)
+	data = cursor.fetchall()
+	
+	return render_template('recent.html',data=(data))
+
 @app.route("/all")
 def allQuotes():
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes order by id ASC;")
+	query = ("select * from quotes.quotes where private = 0 order by id ASC;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
