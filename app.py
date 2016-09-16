@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*
 
 import os
-from flask import Flask, render_template, request, json, abort, make_response, jsonify
+from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint
+from flask.views import View
+from flask_paginate import Pagination
 from werkzeug import generate_password_hash, check_password_hash
 try:
 	from flask.ext.mysql import MySQL
@@ -19,10 +21,42 @@ app.config['MYSQL_DATABASE_DB'] = os.environ['QUOTES_DB_NAME']
 app.config['MYSQL_DATABASE_HOST'] = os.environ['QUOTES_DB_HOST']
 mysql.init_app(app)
 
+@app.route('/')
+@app.route('/all')
+def index():
+    #use this if adding in search features
+    search = False
+    q = request.args.get('q')
+    if q:
+        search = True
+    
+    page = request.args.get('page', type=int, default=1)
+    
+    if page == 1:
+        per_page = 1
+    else:
+        per_page = 10
 
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    query = ("select * from quotes.quotes where private = 0 ORDER BY id ASC LIMIT 10 OFFSET %s;") % (int(page)*int(per_page)-1)
+    cursor.execute(query)
+    data = cursor.fetchall()
 
-@app.route("/")
-@app.route("/all")
+    total=cursor.rowcount
+
+    #page=request.args.get('page')
+    #if not page:
+    #	page = 1
+
+    pagination = Pagination(page=page, total=total, search=search)#, record_name='quotes')
+    return render_template('viewall.html',
+                           data=data,
+                           pagination=pagination,
+                           page=page
+                           )
+
+@app.route("/all_dep")
 def main():
 	conn = mysql.connect()
 	cursor = conn.cursor()
@@ -111,4 +145,5 @@ def not_found(error):
 
 
 if __name__ == "__main__":
+	app.debug = True
 	app.run(host='0.0.0.0', port=5000) #, debug=True

@@ -3,12 +3,14 @@
   <head>
     <title>Ridiculous. Quotes. - "Let's Make Laughing Great Again!"</title>
  
+
     
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
  
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-    <link href="../static/css/add_recipe.css" rel="stylesheet">
+    <link href="../static/css/viewall.css" rel="stylesheet">
     <script src="../static/js/jquery-3.1.0.min.js"></script>
+
 
   </head>
  
@@ -27,12 +29,15 @@
         </nav>
         <h3 class="text-muted">Ridiculous. Quotes.</h3>
       </div>
+      <div>{{ pagination.links }}</div>
+      <center><a href="/?page={{ page+1 }}">Next</a> / <a href="/?page={{ page-1 }}">Back</a></center>
       <div class="jumbotron">
 		{% for quote in data %}
-    		<h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
+        <h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
 		{% endfor %}
 	  </div>
-  
+ 
+    <div class="pagination">{{ pagination.links }}</div>   
  
       <footer class="footer">
         <p>&copy; Nobody and Everybody 2016</p>
