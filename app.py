@@ -22,7 +22,14 @@ mysql.init_app(app)
 
 @app.route("/")
 def main():
-	return render_template('index.html')
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	query = ("select * from quotes.quotes where private = 0 order by id ASC;")
+	cursor.execute(query)
+	data = cursor.fetchall()
+	
+	return render_template('recent.html',data=(data))
+	#return render_template('index.html')
 
 @app.route("/submitQuote")
 def submitRecipe():
@@ -36,7 +43,7 @@ def thanks():
 def recent():
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes order by id DESC limit 10;")
+	query = ("select * from quotes.quotes order by id private = 0 DESC limit 10;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
@@ -80,4 +87,4 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=80, debug=True)
+	app.run(host='0.0.0.0', port=5000) #, debug=True
