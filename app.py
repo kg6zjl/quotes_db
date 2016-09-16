@@ -42,6 +42,16 @@ def recent():
 	
 	return render_template('recent.html',data=(data))
 
+@app.route("/all")
+def recent():
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	query = ("select * from quotes.quotes order by id ASC;")
+	cursor.execute(query)
+	data = cursor.fetchall()
+	
+	return render_template('recent.html',data=(data))
+
 @app.route('/addQuote',methods=['POST','GET'])
 def addRecipe(): # read the posted values from the UI
 	_quote = request.form['quoteText']
@@ -70,4 +80,4 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.run(host='0.0.0.0', port=80, debug=True)
