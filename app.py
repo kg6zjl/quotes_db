@@ -9,6 +9,7 @@ except:
 	from flask_mysql import MySQL
 
 app = Flask(__name__)
+application = Flask(__name__)
 mysql = MySQL()
 
 # MySQL configurations/ENV Vars
@@ -43,7 +44,7 @@ def thanks():
 def recent():
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes order by id private = 0 DESC limit 10;")
+	query = ("select * from quotes.quotes where private = 0 order by id DESC limit 10;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
