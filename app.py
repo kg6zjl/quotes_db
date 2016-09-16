@@ -54,7 +54,7 @@ def recent():
 def random():
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 order by ORDER BY RAND() limit 1;")
+	query = ("select * from quotes.quotes where private = 0 ORDER BY RAND() limit 1;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
