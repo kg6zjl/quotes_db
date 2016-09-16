@@ -43,7 +43,7 @@ def recent():
 	return render_template('recent.html',data=(data))
 
 @app.route("/all")
-def recent():
+def allQuotes():
 	conn = mysql.connect()
 	cursor = conn.cursor()
 	query = ("select * from quotes.quotes order by id ASC;")
