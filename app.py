@@ -32,6 +32,18 @@ def main():
 	return render_template('recent.html',data=(data))
 	#return render_template('index.html')
 
+@app.route('/quote/<quoteID>')
+def singleQuote(quoteID=None):
+	if quoteID:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		query = ("select * from quotes.quotes where private = 0 and id = '%s' LIMIT 1;") % str(quoteID)
+		cursor.execute(query)
+		data = cursor.fetchall()
+	else:
+		data=None
+	return render_template('recent.html',data=(data))
+
 @app.route("/submitQuote")
 def submitRecipe():
 	return render_template('add_quote.html')
