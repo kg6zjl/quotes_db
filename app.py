@@ -47,7 +47,7 @@ def singleQuote(quoteID=None):
 	if quoteID:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where private = 0 and id = '%s' LIMIT 1;") % str(quoteID)
+		query = ("select * from quotes.quotes where id = '%s' LIMIT 1;") % str(quoteID)
 		cursor.execute(query)
 		data = cursor.fetchall()
 	else:
@@ -77,6 +77,16 @@ def random():
 	conn = mysql.connect()
 	cursor = conn.cursor()
 	query = ("select * from quotes.quotes where private = 0 ORDER BY RAND() limit 1;")
+	cursor.execute(query)
+	data = cursor.fetchall()
+	
+	return render_template('recent.html',data=(data))
+
+@app.route("/all")
+def all():
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	query = ("select * from quotes.quotes where private = 0 order by id ASC;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
