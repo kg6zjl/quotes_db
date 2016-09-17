@@ -21,7 +21,6 @@ app.config['MYSQL_DATABASE_DB'] = os.environ['QUOTES_DB_NAME']
 app.config['MYSQL_DATABASE_HOST'] = os.environ['QUOTES_DB_HOST']
 mysql.init_app(app)
 
-@app.route('/')
 @app.route('/all')
 def index():
     #use this if adding in search features
@@ -115,7 +114,9 @@ def recent():
 	
 	return render_template('recent.html',data=(data))
 
+@app.route('/')
 @app.route("/random")
+@app.route("/random/")
 def random():
 	conn = mysql.connect()
 	cursor = conn.cursor()
