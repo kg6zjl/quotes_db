@@ -80,7 +80,7 @@ def darkside(quoteID=None):
 	else:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where private = 1 order by id ASC;")
+		query = ("select * from quotes.quotes where private = 1 order by RAND() ASC;")
 		cursor.execute(query)
 		data = cursor.fetchall()	
 	return render_template('recent.html',data=data,darkside=True)
