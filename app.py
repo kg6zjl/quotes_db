@@ -68,21 +68,29 @@ def main():
 	#return render_template('index.html')
 
 @app.route("/darkside")
-def darkside():
-	conn = mysql.connect()
-	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 1 order by id ASC;")
-	cursor.execute(query)
-	data = cursor.fetchall()
-	
-	return render_template('recent.html',data=(data))
+@app.route("/darkside/")
+@app.route("/darkside/<quoteID>")
+def darkside(quoteID=None):
+	if quoteID:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		query = ("select * from quotes.quotes where private = 1 AND id = '%s' LIMIT 1;") % str(quoteID)
+		cursor.execute(query)
+		data = cursor.fetchall()
+	else:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		query = ("select * from quotes.quotes where private = 1 order by id ASC;")
+		cursor.execute(query)
+		data = cursor.fetchall()	
+	return render_template('recent.html',data=data,darkside=True)
 
 @app.route('/quote/<quoteID>')
 def singleQuote(quoteID=None):
 	if quoteID:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where id = '%s' LIMIT 1;") % str(quoteID)
+		query = ("select * from quotes.quotes where private = 0 AND id = '%s' LIMIT 1;") % str(quoteID)
 		cursor.execute(query)
 		data = cursor.fetchall()
 	else:
@@ -145,5 +153,5 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-	app.debug = True
+	#app.debug = True
 	app.run(host='0.0.0.0', port=5000) #, debug=True

@@ -28,8 +28,13 @@
         <h3 class="text-muted">Ridiculous. Quotes.</h3>
       </div>
       <div class="jumbotron">
-		{% for quote in data %}
-    		<h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
+		
+    {% for quote in data %}
+    		{% if darkside %}
+        <h2><a href="/darkside/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
+        {% else %}
+        <h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
+        {% endif %}
 		{% endfor %}
 	  </div>
   
