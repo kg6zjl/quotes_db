@@ -126,7 +126,8 @@ def random():
 	
 	return render_template('recent.html',data=(data))
 
-@app.route('/addQuote',methods=['POST','GET'])
+#@app.route('/addQuote',methods=['POST','GET']) # for future api?
+@app.route('/addQuote')
 def addRecipe(): # read the posted values from the UI
 	_quote = request.form['quoteText']
 	_author = request.form['quoteAuthor']
@@ -135,7 +136,7 @@ def addRecipe(): # read the posted values from the UI
 	if _title and _description and _contributor:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		cursor.callproc('sp_createRecipe',(_title,_description,_contributor))
+		cursor.callproc('sp_createQuote',(_title,_description,_contributor))
 		data = cursor.fetchall()
 		if len(data) is 0:
 			conn.commit()

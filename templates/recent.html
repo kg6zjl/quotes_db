@@ -31,9 +31,9 @@
 		
     {% for quote in data %}
     		{% if darkside %}
-        <h2><a href="/darkside/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
+        <h2><a href="/darkside/{{ quote[0] }}">{{ quote[1] }}</h2></a>{% if quote[2] %} - {{ quote[2] }}{% endif %}<br>
         {% else %}
-        <h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
+        <h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a>{% if quote[2] %} - {{ quote[2] }}{% endif %}<br>
         {% endif %}
 		{% endfor %}
 	  </div>
