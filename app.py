@@ -114,7 +114,7 @@ def recent():
 	
 	return render_template('recent.html',data=(data))
 
-#@app.route('/')
+@app.route('/')
 @app.route("/random")
 @app.route("/random/")
 def random():
