@@ -30,14 +30,14 @@
         <h3 class="text-muted">Ridiculous. Quotes.</h3>
       </div>
       <div>{{ pagination.links }}</div>
-      <center><a href="/?page={{ page+1 }}">Next</a>{% if page-1 >=1 %} / <a href="/?page={{ page-1 }}">Back</a>{% endif %}</center>
+      <center><a href="all?page={{ page+1 }}">Next</a>{% if page-1 >=1 %} / <a href="all?page={{ page-1 }}">Back</a>{% endif %}</center>
       <br>
       <div class="jumbotron">
 		{% for quote in data %}
         <h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a> - {{ quote[2] }}<br>
 		{% endfor %}
 	  </div>
-    <center><a href="/?page={{ page+1 }}">Next</a>{% if page-1 >=1 %} / <a href="/?page={{ page-1 }}">Back</a>{% endif %}</center>
+    <center><a href="all?page={{ page+1 }}">Next</a>{% if page-1 >=1 %} / <a href="all?page={{ page-1 }}">Back</a>{% endif %}</center>
     <div class="pagination">{{ pagination.links }}</div>   
  
       <footer class="footer">
