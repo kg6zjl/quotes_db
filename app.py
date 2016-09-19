@@ -127,7 +127,27 @@ def author(name=None):
 			
 			return render_template('recent.html',data=(data))
 		except:
-			return render_template('recent.html',data='try again')
+			return render_template('recent.html')
+
+@app.route("/search")
+@app.route("/search/")
+@app.route("/search/<searchString>")
+def search(searchString=None):
+	if searchString:
+		searchString = searchString.replace("'", "\\'")
+		searchString = ('%'+searchString+'%')
+		try:
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			query = ("select * from quotes.quotes q where private = 0 and quote like '%s' order by id DESC;") % searchString
+			cursor.execute(query)
+			data = cursor.fetchall()
+			
+			return render_template('recent.html',data=(data))
+		except:
+			return render_template('recent.html',data=None)
+	else:
+		return render_template('recent.html',data=None)
 
 @app.route('/')
 @app.route("/random")
@@ -170,5 +190,5 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-	app.debug = True
-	app.run(host='0.0.0.0', port=5000) #, debug=True
+	#app.debug = True
+	app.run(host='0.0.0.0', port=5000)
