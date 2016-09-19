@@ -127,7 +127,7 @@ def author(name=None):
 			
 			return render_template('recent.html',data=(data))
 		except:
-			data=[('404',"Something broke.","Webserver")]
+			data=[('404','"Something broke."',"Webserver")]
 			return render_template('recent.html',data=data)
 
 @app.route("/search")
@@ -146,10 +146,10 @@ def search(searchString=None):
 			
 			return render_template('recent.html',data=(data))
 		except:
-			data=[('404',"Something broke.","Webserver")]
+			data=[('404','"Something broke."',"Webserver")]
 			return render_template('recent.html',data=None)
 	else:
-		data=[('404',"Something broke.","Webserver")]
+		data=[('404','"Something broke."',"Webserver")]
 		return render_template('recent.html',data=data)
 
 @app.route('/')
@@ -189,7 +189,7 @@ def addRecipe(): # read the posted values from the UI
 @app.errorhandler(404)
 def not_found(error):
 	#to use, call: abort(404)
-	data=[('404',"Something broke.","Webserver")]
+	data=[('404','"Something broke."',"Webserver")]
 	return render_template('recent.html',data=data)
 	#return make_response(jsonify({'error': 'Not found'}), 404)
 
