@@ -117,13 +117,17 @@ def recent():
 @app.route("/author/<name>")
 def author(name=None):
 	if name:
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where private = 0 and name like '%s' order by id DESC;") % name
-		cursor.execute(query)
-		data = cursor.fetchall()
-		
-		return render_template('recent.html',data=(data))
+		name = name.replace("'", "\\'")
+		try:
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			query = ("select * from quotes.quotes q where private = 0 and name like '%s' order by id DESC;") % name
+			cursor.execute(query)
+			data = cursor.fetchall()
+			
+			return render_template('recent.html',data=(data))
+		except:
+			return render_template('recent.html',data='try again')
 
 @app.route('/')
 @app.route("/random")
@@ -131,7 +135,7 @@ def author(name=None):
 def random():
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 ORDER BY RAND() limit 1;")
+	query = ("select * from quotes.quotes where private = 0 ORDER BY (RAND()*hour(now())) limit 1;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
