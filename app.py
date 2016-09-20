@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*
 
 import os
-from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint, redirect, url_for
+from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint, redirect, url_for, session
 from flask.views import View
 from flask_paginate import Pagination
 from werkzeug import generate_password_hash, check_password_hash
@@ -46,9 +46,36 @@ def input(key=None):
 @app.route('/submit/<key>')
 def new_quote(key=None):
 	if key == upload_api_key:
+		session['logged_in'] = True
 		return render_template('add_quote.html',key=upload_api_key)
 	else:
 		data=[('404','"Something broke."',"Webserver")]
+
+#@app.route('/edit/<quoteID>')
+@app.route('/edit/<quoteID>',methods=['POST','GET'])
+def edit_quote(quoteID=None):
+	if session.get('logged_in'):
+		if session['logged_in'] == True:
+			auth=True
+			if request.method == 'POST':
+				quote, author, private = request.form['quoteText'], request.form['quoteAuthor'], request.form['quotePrivate']
+				conn = mysql.connect()
+				cursor = conn.cursor()
+				query = ("update quotes.quotes set quote='%s', name='%s', private='%s' where id = '%s';") % (quote.replace("'", "\\'"), author.replace("'", "\\'"), private, quoteID)
+				cursor.execute(query)
+				conn.commit()
+				return redirect("/quote/"+quoteID, code=302)
+			else:
+				if quoteID:
+					conn = mysql.connect()
+					cursor = conn.cursor()
+					query = ("select * from quotes.quotes where id = '%s' LIMIT 1;") % str(quoteID)
+					cursor.execute(query)
+					data = cursor.fetchall()
+					return render_template('edit_quote.html',data=data,auth=auth)
+	else:
+		data=[('404','"Something broke."',"Webserver")]
+			
 
 @app.route('/all')
 def index():
@@ -116,17 +143,21 @@ def darkside(quoteID=None):
 @app.route('/quote/<quoteID>')
 def singleQuote(quoteID=None):
 	if quoteID:
+		darkside=False
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where private = 0 AND id = '%s' LIMIT 1;") % str(quoteID)
+		query = ("select * from quotes.quotes where private = '0' and id = '%s' LIMIT 1;") % str(quoteID)
+		if session.get('logged_in'):
+			if session['logged_in'] == True:
+				auth=True
+				darkside=True
+				query = ("select * from quotes.quotes where id = '%s' LIMIT 1;") % str(quoteID)
 		cursor.execute(query)
 		data = cursor.fetchall()
-	else:
-		data=None
-	return render_template('recent.html',data=(data))
+		return render_template('recent.html',data=(data),darkside=darkside)
 
 @app.route("/submitQuote")
-def submitRecipe():
+def submitQuote():
 	return render_template('add_quote.html')
 
 @app.route("/thanks")
@@ -224,5 +255,6 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-	#app.debug = True
+	app.debug = True
+	app.secret_key = upload_api_key
 	app.run(host='0.0.0.0', port=5000)

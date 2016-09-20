@@ -10,12 +10,6 @@
     <link href="../static/css/add_recipe.css" rel="stylesheet">
     <script src="../static/js/jquery-3.1.0.min.js"></script>
 
-    <script>
-    function goBack() {
-        window.history.back();
-    }
-    </script>
-
   </head>
  
   <body>
@@ -28,22 +22,33 @@
               <li role="presentation" class="active"><a href="/recent">Recent</a></li>
               <li role="presentation" class="active"><a href="/random">Random</a></li>
               <li role="presentation" class="active"><a onclick="goBack()" href="#">Back</a>
-              <!-- <li role="presentation"><a href="#">Sign In</a></li> -->
-              <!-- <li role="presentation"><a href="submitQuote">Submit New Quote</a></li> -->
           </ul>
         </nav>
         <h3 class="text-muted">Ridiculous. Quotes.</h3>
       </div>
+ 
       <div class="jumbotron">
-    {% for quote in data %}
-        {% if darkside == True %}
-        <h2><a href="/darkside/{{ quote[0] }}">{{ quote[1] }}</h2></a>{% if quote[2] %} - <a href="/author/{{ quote[2].lower() }}">{{ quote[2] }}</a>{% endif %}<br>
-        {% else %}
-        <h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a>{% if quote[2] %} - <a href="/author/{{ quote[2].lower() }}">{{ quote[2] }}</a>{% endif %}<br>
-        {% endif %}
-    {% endfor %}
-    </div>
-  
+    {% if auth == True %}
+      {% for quote in data %}
+        <h1>Edit Quote</h1>
+        <form class="form-signin" action="/edit/{{ quote[0] }}" method="POST">
+        <label for="quoteText" class="sr-only">Quote</label>
+        <input type="text" name="quoteText" id="quoteText" class="form-control" value="{{ quote[1] }}" required autofocus>
+        
+        <label for="quoteAuthor" class="sr-only">Author</label>
+        <input type="text" name="quoteAuthor" id="quoteAuthor" class="form-control" value="{{ quote[2] }}">
+         
+        <label for="quotePrivate" class="sr-only">Private</label>
+        <input type="text" name="quotePrivate" id="quotePrivate" class="form-control" value="{{ quote[3] }}" required autofocus>
+
+        <!-- <button id="btnSubmit" class="btn btn-lg btn-primary btn-block" type="button">Submit</button> -->
+        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Update Quote">
+      </form>
+      {% endfor %}
+    {% endif %}
+      </div>
+ 
+       
  
       <footer class="footer">
         <p>&copy; Nobody and Everybody 2016</p>
