@@ -8,8 +8,7 @@
  
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link href="../static/css/add_recipe.css" rel="stylesheet">
-    <script src="../static/js/jquery-3.1.0.min.js"></script>
-    <script src="../static/js/search.js"></script>
+    <script src="../js/jquery-3.1.0.min.js"></script>
     <script src="../js/search.js"></script>
 
   </head>
@@ -24,7 +23,7 @@
               <li role="presentation" class="active"><a href="/recent">Recent</a></li>
               <li role="presentation" class="active"><a href="/random">Random</a></li>
               <li role="presentation" class="active"><a href="/search">Search</a></li>
-              <li role="presentation" class="active"><a onclick="goBack()" href="#">Back</a>
+              <!--<li role="presentation" class="active"><a onclick="goBack()" href="#">Back</a> -->
           </ul>
         </nav>
         <h3 class="text-muted">Ridiculous. Quotes.</h3>
@@ -35,8 +34,7 @@
         <form class="form-signin" method="POST">
         <label for="searchText" class="sr-only">Search</label>
         <input type="text" name="searchText" id="searchText" class="form-control" placeholder="Search" required autofocus>
-
-        <button id="btnSearch" class="btn btn-lg btn-primary btn-block" type="button">Search</button>
+        <button id="btnSearch" class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
         </form>
       </div>
  
