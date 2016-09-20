@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Ridiculous. Quotes.</title>
+    <title>Ridiculous. Quotes. - "Let's Make Laughing Great Again!"</title>
  
     
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -9,7 +9,6 @@
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link href="../static/css/add_recipe.css" rel="stylesheet">
     <script src="../static/js/jquery-3.1.0.min.js"></script>
-    <script src="../static/js/addRecipe.js"></script>
 
   </head>
  
@@ -19,25 +18,32 @@
       <div class="header">
         <nav>
           <ul class="nav nav-pills pull-right">
-              <li role="presentation" class="active"><a href="/">Home</a></li>
-              <li role="presentation"><a href="#">Sign In</a></li>
-              <li role="presentation"><a href="submitQuote">Submit New Quote</a></li>
+              <li role="presentation" class="active"><a href="/all">View All</a></li>
+              <li role="presentation" class="active"><a href="/recent">Recent</a></li>
+              <li role="presentation" class="active"><a href="/random">Random</a></li>
+              <li role="presentation" class="active"><a onclick="goBack()" href="#">Back</a>
           </ul>
         </nav>
         <h3 class="text-muted">Ridiculous. Quotes.</h3>
       </div>
  
       <div class="jumbotron">
+       {% if key %} 
         <h1>Submit New Quote</h1>
-        <form class="form-signin">
+        <form class="form-signin" action="/submitquote/{{ key }}" method="POST">
         <label for="quoteText" class="sr-only">Quote</label>
-        <input type="text" name="quoteText" id="quoteText" class="form-control" placeholder="Quote Text" required autofocus>
+        <input type="text" name="quoteText" id="quoteText" class="form-control" placeholder="Quote Text with quotations" required autofocus>
         
         <label for="quoteAuthor" class="sr-only">Author</label>
-        <input type="text" name="quoteAuthor" id="quoteAuthor" class="form-control" placeholder="Author" required autofocus>
+        <input type="text" name="quoteAuthor" id="quoteAuthor" class="form-control" placeholder="Author">
          
-        <button id="btnSubmit" class="btn btn-lg btn-primary btn-block" type="button">Submit</button>
+        <label for="quotePrivate" class="sr-only">Private</label>
+        <input type="text" name="quotePrivate" id="quotePrivate" class="form-control" placeholder="0 = public, 1 = darkside" required autofocus>
+
+        <!-- <button id="btnSubmit" class="btn btn-lg btn-primary btn-block" type="button">Submit</button> -->
+        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Add Quote">
       </form>
+      {% endif %}
       </div>
  
        

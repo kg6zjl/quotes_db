@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*
 
 import os
-from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint
+from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint, redirect, url_for
 from flask.views import View
 from flask_paginate import Pagination
 from werkzeug import generate_password_hash, check_password_hash
@@ -14,12 +14,41 @@ app = Flask(__name__)
 application = Flask(__name__)
 mysql = MySQL()
 
-# MySQL configurations/ENV Vars
+# sql envs
 app.config['MYSQL_DATABASE_USER'] = os.environ['QUOTES_DB_USER']
 app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['QUOTES_DB_PASS']
 app.config['MYSQL_DATABASE_DB'] = os.environ['QUOTES_DB_NAME']
 app.config['MYSQL_DATABASE_HOST'] = os.environ['QUOTES_DB_HOST']
 mysql.init_app(app)
+# mailchimp envs
+mailchimp_api_key = os.environ['MAILCHIMP_API_KEY']
+#upload_api_key
+upload_api_key = os.environ['UPLOAD_API_KEY']
+
+@app.route('/submitquote/<key>',methods=['POST','GET'])
+def input(key=None):
+	if key == upload_api_key:
+		quote = None
+		author = None
+		private = None
+		if request.method == 'POST':
+			quote, author, private = request.form['quoteText'], request.form['quoteAuthor'], request.form['quotePrivate']
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			query = ("insert into quotes (quote,name,private) values ('%s', '%s', '%s');") % (quote.replace("'", "\\'"), author.replace("'", "\\'"), private)
+			cursor.execute(query)
+			conn.commit()
+			return(redirect(url_for('recent'), code=302))
+	else:
+		data=[('404','"Something broke."',"Webserver")]
+		return render_template('recent.html',key=key)
+
+@app.route('/submit/<key>')
+def new_quote(key=None):
+	if key == upload_api_key:
+		return render_template('add_quote.html',key=upload_api_key)
+	else:
+		data=[('404','"Something broke."',"Webserver")]
 
 @app.route('/all')
 def index():

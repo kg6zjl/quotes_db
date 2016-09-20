@@ -35,15 +35,15 @@
         <h3 class="text-muted">Ridiculous. Quotes.</h3>
       </div>
       <div class="jumbotron">
-		
+    
     {% for quote in data %}
-    		{% if darkside %}
+        {% if darkside %}
         <h2><a href="/darkside/{{ quote[0] }}">{{ quote[1] }}</h2></a>{% if quote[2] %} - <a href="/author/{{ quote[2].lower() }}">{{ quote[2] }}</a>{% endif %}<br>
         {% else %}
         <h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a>{% if quote[2] %} - <a href="/author/{{ quote[2].lower() }}">{{ quote[2] }}</a>{% endif %}<br>
         {% endif %}
-		{% endfor %}
-	  </div>
+    {% endfor %}
+    </div>
   
  
       <footer class="footer">

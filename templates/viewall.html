@@ -39,10 +39,10 @@
       <center><a href="all?page={{ page+1 }}">Next</a>{% if page-1 >=1 %} / <a href="all?page={{ page-1 }}">Back</a>{% endif %}</center>
       <br>
       <div class="jumbotron">
-		{% for quote in data %}
+    {% for quote in data %}
         <h2><a href="/quote/{{ quote[0] }}">{{ quote[1] }}</h2></a>{% if quote[2] %} - <a href="/author/{{ quote[2].lower() }}">{{ quote[2] }}</a>{% endif %}<br>
-		{% endfor %}
-	  </div>
+    {% endfor %}
+    </div>
     <center><a href="all?page={{ page+1 }}">Next</a>{% if page-1 >=1 %} / <a href="all?page={{ page-1 }}">Back</a>{% endif %}</center>
     <div class="pagination">{{ pagination.links }}</div>   
  
