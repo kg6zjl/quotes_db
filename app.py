@@ -51,7 +51,6 @@ def new_quote(key=None):
 	else:
 		data=[('404','"Something broke."',"Webserver")]
 
-#@app.route('/edit/<quoteID>')
 @app.route('/edit/<quoteID>',methods=['POST','GET'])
 def edit_quote(quoteID=None):
 	if session.get('logged_in'):
@@ -75,7 +74,8 @@ def edit_quote(quoteID=None):
 					return render_template('edit_quote.html',data=data,auth=auth)
 	else:
 		data=[('404','"Something broke."',"Webserver")]
-			
+		return render_template('recent.html',data=data)
+
 
 @app.route('/all')
 def index():
@@ -255,6 +255,6 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-	app.debug = True
+	#app.debug = True
 	app.secret_key = upload_api_key
 	app.run(host='0.0.0.0', port=5000)
