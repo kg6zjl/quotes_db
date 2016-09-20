@@ -2,6 +2,7 @@
 
 import os
 from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint, redirect, url_for, session
+from flask.ext.session import Session
 from flask.views import View
 from flask_paginate import Pagination
 from werkzeug import generate_password_hash, check_password_hash
@@ -13,6 +14,7 @@ except:
 app = Flask(__name__)
 application = Flask(__name__)
 mysql = MySQL()
+#sess = Session()
 
 # sql envs
 app.config['MYSQL_DATABASE_USER'] = os.environ['QUOTES_DB_USER']
@@ -48,13 +50,13 @@ def input(key=None):
 @app.route('/submit/<key>')
 def new_quote(key=None):
 	if key == upload_api_key:
-		session['logged_in'] = True
+		#session['logged_in'] = True
 		return render_template('add_quote.html',key=upload_api_key)
 	else:
 		data=[('404','"Something broke."',"Webserver")]
 
 #edit the text/author/darkside of a quote
-@app.route('/edit/<quoteID>',methods=['POST','PUT','GET'])
+#@app.route('/edit/<quoteID>',methods=['POST','PUT','GET'])
 def edit_quote(quoteID=None):
 	if session.get('logged_in'):
 		if session['logged_in'] == True:
@@ -80,7 +82,7 @@ def edit_quote(quoteID=None):
 		return render_template('recent.html',data=data)
 
 #mark a quote as "removed"
-@app.route('/delete/<quoteID>',methods=['POST','GET'])
+#@app.route('/delete/<quoteID>',methods=['POST','GET'])
 def delete_quote(quoteID=None):
 	if session.get('logged_in'):
 		if session['logged_in'] == True:
@@ -168,11 +170,11 @@ def singleQuote(quoteID=None):
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		query = ("select * from quotes.quotes where private = '0' and remove is NULL and id = '%s' LIMIT 1;") % str(quoteID)
-		if session.get('logged_in'):
-			if session['logged_in'] == True:
-				auth=True
-				darkside=True
-				query = ("select * from quotes.quotes where id = '%s' and remove is NULL LIMIT 1;") % str(quoteID)
+		#if session.get('logged_in'):
+		#	if session['logged_in'] == True:
+		#		auth=True
+		#		darkside=True
+		#		query = ("select * from quotes.quotes where id = '%s' and remove is NULL LIMIT 1;") % str(quoteID)
 		cursor.execute(query)
 		data = cursor.fetchall()
 		return render_template('recent.html',data=(data),darkside=False)
@@ -237,7 +239,6 @@ def search(searchString=None):
 @app.route("/random")
 @app.route("/random/")
 def random():
-	session['logged_in'] == False
 	conn = mysql.connect()
 	cursor = conn.cursor()
 	query = ("select * from quotes.quotes where private = 0 and remove is NULL ORDER BY RAND() limit 1;")
@@ -277,6 +278,7 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-	app.debug = True
-	app.secret_key = upload_api_key
+	#app.debug = True
+	#app.secret_key = upload_api_key
+
 	app.run(host='0.0.0.0', port=5000)
