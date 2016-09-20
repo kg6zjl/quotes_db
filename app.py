@@ -20,6 +20,7 @@ app.config['MYSQL_DATABASE_USER'] = os.environ['QUOTES_DB_USER']
 app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['QUOTES_DB_PASS']
 app.config['MYSQL_DATABASE_DB'] = os.environ['QUOTES_DB_NAME']
 app.config['MYSQL_DATABASE_HOST'] = os.environ['QUOTES_DB_HOST']
+
 mysql.init_app(app)
 # mailchimp envs
 mailchimp_api_key = os.environ['MAILCHIMP_API_KEY']
@@ -76,24 +77,6 @@ def edit_quote(quoteID=None):
 					cursor.execute(query)
 					data = cursor.fetchall()
 					return render_template('edit_quote.html',data=data,auth=auth)
-	else:
-		data=[('404','"Something broke."',"Webserver")]
-		return render_template('recent.html',data=data)
-
-#mark a quote as "removed"
-#@app.route('/delete/<quoteID>',methods=['POST','GET'])
-def delete_quote(quoteID=None):
-	if session.get('logged_in'):
-		if session['logged_in'] == True:
-			auth=True
-			if request.method == 'POST':
-				conn = mysql.connect()
-				cursor = conn.cursor()
-				query = ("update quotes.quotes set remove=1 where id = '%s';") % (quoteID)
-				cursor.execute(query)
-				conn.commit()
-				data=[('404','"Deleted."',"Webserver")]
-				return render_template('recent.html',data=data)
 	else:
 		data=[('404','"Something broke."',"Webserver")]
 		return render_template('recent.html',data=data)
@@ -212,27 +195,23 @@ def author(name=None):
 			data=[('404','"Something broke."',"Webserver")]
 			return render_template('recent.html',data=data)
 
-@app.route("/search")
-@app.route("/search/")
-@app.route("/search/<searchString>")
-def search(searchString=None):
-	if searchString:
+@app.route('/search/',methods=['GET','POST'])
+def search_v2():
+	if request.method == 'POST': #request.method == 'POST' or 
+		searchString = request.form['searchText']
 		searchString = searchString.replace("'", "\\'")
-		searchString = ('%'+searchString+'%')
-		try:
-			conn = mysql.connect()
-			cursor = conn.cursor()
-			query = ("select * from quotes.quotes q where private = 0 and quote like '%s' and remove is NULL order by id DESC;") % searchString
-			cursor.execute(query)
-			data = cursor.fetchall()
-			
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		query = ("SELECT * FROM quotes.quotes WHERE private = 0 and remove is NULL and MATCH(quote) AGAINST('%s*' IN BOOLEAN MODE) ORDER BY MATCH(quote) AGAINST('%s*') DESC;") % (searchString,searchString)
+		cursor.execute(query)
+		data = cursor.fetchall()
+		if data:
 			return render_template('recent.html',data=(data))
-		except:
-			data=[('404','"Something broke."',"Webserver")]
-			return render_template('recent.html',data=None)
-	else:
-		data=[('404','"Something broke."',"Webserver")]
-		return render_template('recent.html',data=data)
+		else:
+			data=[('','"No results."',"Webserver")]
+			return render_template('recent.html',data=data)
+	return render_template('search.html')
+
 
 @app.route('/')
 @app.route("/random")
@@ -275,9 +254,7 @@ def not_found(error):
 	return render_template('recent.html',data=data)
 	#return make_response(jsonify({'error': 'Not found'}), 404)
 
-
 if __name__ == "__main__":
 	#app.debug = True
 	#app.secret_key = upload_api_key
-
 	app.run(host='0.0.0.0', port=5000)

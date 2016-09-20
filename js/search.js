@@ -1,8 +1,8 @@
 $(function(){
-	$('#btnSubmitRecipe').click(function(){
+	$('#btnSearch').click(function(){
 		
 		$.ajax({
-			url: '/addRecipe',
+			url: '/search',
 			data: $('form').serialize(),
 			type: 'POST',
 			success: function(response){
