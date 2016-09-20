@@ -25,6 +25,7 @@ mailchimp_api_key = os.environ['MAILCHIMP_API_KEY']
 #upload_api_key
 upload_api_key = os.environ['UPLOAD_API_KEY']
 
+#write new quote to db
 @app.route('/submitquote/<key>',methods=['POST','GET'])
 def input(key=None):
 	if key == upload_api_key:
@@ -43,6 +44,7 @@ def input(key=None):
 		data=[('404','"Something broke."',"Webserver")]
 		return render_template('recent.html',key=key)
 
+#submit a new quote
 @app.route('/submit/<key>')
 def new_quote(key=None):
 	if key == upload_api_key:
@@ -51,7 +53,8 @@ def new_quote(key=None):
 	else:
 		data=[('404','"Something broke."',"Webserver")]
 
-@app.route('/edit/<quoteID>',methods=['POST','GET'])
+#edit the text/author/darkside of a quote
+@app.route('/edit/<quoteID>',methods=['POST','PUT','GET'])
 def edit_quote(quoteID=None):
 	if session.get('logged_in'):
 		if session['logged_in'] == True:
@@ -76,6 +79,23 @@ def edit_quote(quoteID=None):
 		data=[('404','"Something broke."',"Webserver")]
 		return render_template('recent.html',data=data)
 
+#mark a quote as "removed"
+@app.route('/delete/<quoteID>',methods=['POST','GET'])
+def delete_quote(quoteID=None):
+	if session.get('logged_in'):
+		if session['logged_in'] == True:
+			auth=True
+			if request.method == 'POST':
+				conn = mysql.connect()
+				cursor = conn.cursor()
+				query = ("update quotes.quotes set remove=1 where id = '%s';") % (quoteID)
+				cursor.execute(query)
+				conn.commit()
+				data=[('404','"Deleted."',"Webserver")]
+				return render_template('recent.html',data=data)
+	else:
+		data=[('404','"Something broke."',"Webserver")]
+		return render_template('recent.html',data=data)
 
 @app.route('/all')
 def index():
@@ -94,7 +114,7 @@ def index():
 
     conn = mysql.connect()
     cursor = conn.cursor()
-    query = ("select * from quotes.quotes where private = 0 ORDER BY id ASC LIMIT 10 OFFSET %s;") % (int(page)*int(per_page)-1)
+    query = ("select * from quotes.quotes where private = 0 and remove is NULL ORDER BY id ASC LIMIT 10 OFFSET %s;") % (int(page)*int(per_page)-1)
     cursor.execute(query)
     data = cursor.fetchall()
 
@@ -115,7 +135,7 @@ def index():
 def main():
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 ORDER BY RAND() LIMIT 50;")
+	query = ("select * from quotes.quotes where private = 0 and remove is NULL ORDER BY RAND() LIMIT 50;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
@@ -129,32 +149,33 @@ def darkside(quoteID=None):
 	if quoteID:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where private = 1 AND id = '%s' LIMIT 1;") % str(quoteID)
+		query = ("select * from quotes.quotes where private = 1 AND id = '%s' and remove is NULL LIMIT 1;") % str(quoteID)
 		cursor.execute(query)
 		data = cursor.fetchall()
 	else:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where private = 1 order by RAND() ASC;")
+		query = ("select * from quotes.quotes where private = 1 and remove is NULL order by RAND() ASC;")
 		cursor.execute(query)
 		data = cursor.fetchall()	
 	return render_template('recent.html',data=data,darkside=True)
 
 @app.route('/quote/<quoteID>')
 def singleQuote(quoteID=None):
+	darkside=False
 	if quoteID:
 		darkside=False
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where private = '0' and id = '%s' LIMIT 1;") % str(quoteID)
+		query = ("select * from quotes.quotes where private = '0' and remove is NULL and id = '%s' LIMIT 1;") % str(quoteID)
 		if session.get('logged_in'):
 			if session['logged_in'] == True:
 				auth=True
 				darkside=True
-				query = ("select * from quotes.quotes where id = '%s' LIMIT 1;") % str(quoteID)
+				query = ("select * from quotes.quotes where id = '%s' and remove is NULL LIMIT 1;") % str(quoteID)
 		cursor.execute(query)
 		data = cursor.fetchall()
-		return render_template('recent.html',data=(data),darkside=darkside)
+		return render_template('recent.html',data=(data),darkside=False)
 
 @app.route("/submitQuote")
 def submitQuote():
@@ -168,7 +189,7 @@ def thanks():
 def recent():
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 order by id DESC limit 10;")
+	query = ("select * from quotes.quotes where private = 0 and remove is NULL order by id DESC limit 10;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
@@ -181,7 +202,7 @@ def author(name=None):
 		try:
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			query = ("select * from quotes.quotes q where private = 0 and name like '%s' order by id DESC;") % name
+			query = ("select * from quotes.quotes q where private = 0 and name like '%s' and remove is NULL order by id DESC;") % name
 			cursor.execute(query)
 			data = cursor.fetchall()
 			
@@ -200,7 +221,7 @@ def search(searchString=None):
 		try:
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			query = ("select * from quotes.quotes q where private = 0 and quote like '%s' order by id DESC;") % searchString
+			query = ("select * from quotes.quotes q where private = 0 and quote like '%s' and remove is NULL order by id DESC;") % searchString
 			cursor.execute(query)
 			data = cursor.fetchall()
 			
@@ -216,9 +237,10 @@ def search(searchString=None):
 @app.route("/random")
 @app.route("/random/")
 def random():
+	session['logged_in'] == False
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 ORDER BY RAND() limit 1;")
+	query = ("select * from quotes.quotes where private = 0 and remove is NULL ORDER BY RAND() limit 1;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	
@@ -255,6 +277,6 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-	#app.debug = True
+	app.debug = True
 	app.secret_key = upload_api_key
 	app.run(host='0.0.0.0', port=5000)

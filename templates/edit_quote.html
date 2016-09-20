@@ -42,8 +42,11 @@
         <input type="text" name="quotePrivate" id="quotePrivate" class="form-control" value="{{ quote[3] }}" required autofocus>
 
         <!-- <button id="btnSubmit" class="btn btn-lg btn-primary btn-block" type="button">Submit</button> -->
-        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Update Quote">
-      </form>
+        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Update Quote"></form>
+        <form class="form-signin" action="/delete/{{ quote[0] }}" method="POST">
+        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Delete Quote">
+        </form>
+      
       {% endfor %}
     {% endif %}
       </div>
