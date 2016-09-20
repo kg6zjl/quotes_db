@@ -2,7 +2,6 @@
 
 import os
 from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint, redirect, url_for, session
-from flask.ext.session import Session
 from flask.views import View
 from flask_paginate import Pagination
 from werkzeug import generate_password_hash, check_password_hash
