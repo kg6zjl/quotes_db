@@ -115,17 +115,6 @@ def index():
                            page=page
                            )
 
-@app.route("/all_dep")
-def main():
-	conn = mysql.connect()
-	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 and remove is NULL ORDER BY RAND() LIMIT 50;")
-	cursor.execute(query)
-	data = cursor.fetchall()
-	
-	return render_template('recent.html',data=(data))
-	#return render_template('index.html')
-
 @app.route("/darkside")
 @app.route("/darkside/")
 @app.route("/darkside/<quoteID>")
@@ -139,7 +128,7 @@ def darkside(quoteID=None):
 	else:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		query = ("select * from quotes.quotes where private = 1 and remove is NULL order by RAND() ASC;")
+		query = ("select * from quotes.quotes where private = 1 and remove is NULL order by id DESC;")
 		cursor.execute(query)
 		data = cursor.fetchall()	
 	return render_template('recent.html',data=data,darkside=True)
