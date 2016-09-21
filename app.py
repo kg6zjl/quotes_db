@@ -42,10 +42,12 @@ def rss_feed():
 	for quote in data:
 		title = 'Ridiculous. Quotes. (#'+str(quote[0])+")"
 		if quote[2]:
+			quote_text = (str(quote[1])+str(" - ")+str(quote[2]))
 			author = str(quote[2])
 		else:
 			author = ' '
-		feed.add(unicode(title), unicode(quote[1]),
+			quote_text = str(quote[1])
+		feed.add(unicode(title), unicode(quote_text),
 				 content_type='html',
 				 author=author,
 				 id=quote[0],
