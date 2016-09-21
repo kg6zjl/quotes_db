@@ -38,9 +38,9 @@ def rss_feed():
 	data = cursor.fetchall()
 	# now process to xml:
 
-	feed = AtomFeed('Recent Quotes', feed_url=request.url, url=request.url_root)
+	feed = AtomFeed('Recent Quotes', feed_url="", url=request.url_root)
 	for quote in data:
-		title = 'Quote ID: '+str(quote[0])
+		title = 'Ridiculous. Quotes. (#'+str(quote[0])+")"
 		if quote[2]:
 			author = str(quote[2])
 		else:
@@ -49,7 +49,7 @@ def rss_feed():
 				 content_type='html',
 				 author=author,
 				 id=quote[0],
-				 url=(request.url_root+"quote/"+str(quote[0])),
+				 url=("http://quotes.stevearnett.com/quote/"+str(quote[0])),
 				 updated=quote[5])
 	return feed.get_response()	
 
