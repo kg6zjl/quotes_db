@@ -38,7 +38,7 @@ def rss_feed():
 	data = cursor.fetchall()
 	# now process to xml:
 
-	feed = AtomFeed('Recent Quotes', feed_url="", url=request.url_root)
+	feed = AtomFeed('Recent Quotes', feed_url=request.url, url=request.url_root)
 	for quote in data:
 		title = 'Ridiculous. Quotes. (#'+str(quote[0])+")"
 		if quote[2]:
