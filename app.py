@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, json, abort, make_response, j
 from flask.views import View
 from flask_paginate import Pagination
 from werkzeug import generate_password_hash, check_password_hash
+from werkzeug.contrib.atom import AtomFeed
 try:
 	from flask.ext.mysql import MySQL
 except:
@@ -26,6 +27,31 @@ mysql.init_app(app)
 mailchimp_api_key = os.environ['MAILCHIMP_API_KEY']
 #upload_api_key
 upload_api_key = os.environ['UPLOAD_API_KEY']
+
+@app.route('/feed')
+def rss_feed():
+	#get data for rss feed:
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	query = ("select * from quotes.quotes where private = 0 and remove is NULL and created_at >= (DATE(NOW()) - INTERVAL 7 DAY) order by id DESC LIMIT 20;")
+	cursor.execute(query)
+	data = cursor.fetchall()
+	# now process to xml:
+
+	feed = AtomFeed('Recent Quotes', feed_url=request.url, url=request.url_root)
+	for quote in data:
+		title = 'Quote ID: '+str(quote[0])
+		if quote[2]:
+			author = str(quote[2])
+		else:
+			author = ' '
+		feed.add(unicode(title), unicode(quote[1]),
+				 content_type='html',
+				 author=author,
+				 id=quote[0],
+				 url=(request.url_root+"quote/"+str(quote[0])),
+				 updated=quote[5])
+	return feed.get_response()	
 
 #write new quote to db
 @app.route('/submitquote/<key>',methods=['POST','GET'])
@@ -83,37 +109,37 @@ def edit_quote(quoteID=None):
 
 @app.route('/all')
 def index():
-    #use this if adding in search features
-    search = False
-    q = request.args.get('q')
-    if q:
-        search = True
-    
-    page = request.args.get('page', type=int, default=1)
-    
-    if page == 1:
-        per_page = 1
-    else:
-        per_page = 10
+	#use this if adding in search features
+	search = False
+	q = request.args.get('q')
+	if q:
+		search = True
+	
+	page = request.args.get('page', type=int, default=1)
+	
+	if page == 1:
+		per_page = 1
+	else:
+		per_page = 10
 
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    query = ("select * from quotes.quotes where private = 0 and remove is NULL ORDER BY id ASC LIMIT 10 OFFSET %s;") % (int(page)*int(per_page)-1)
-    cursor.execute(query)
-    data = cursor.fetchall()
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	query = ("select * from quotes.quotes where private = 0 and remove is NULL ORDER BY id ASC LIMIT 10 OFFSET %s;") % (int(page)*int(per_page)-1)
+	cursor.execute(query)
+	data = cursor.fetchall()
 
-    total=cursor.rowcount
+	total=cursor.rowcount
 
-    #page=request.args.get('page')
-    #if not page:
-    #	page = 1
+	#page=request.args.get('page')
+	#if not page:
+	#	page = 1
 
-    pagination = Pagination(page=page, total=total, search=search)#, record_name='quotes')
-    return render_template('viewall.html',
-                           data=data,
-                           pagination=pagination,
-                           page=page
-                           )
+	pagination = Pagination(page=page, total=total, search=search)#, record_name='quotes')
+	return render_template('viewall.html',
+						   data=data,
+						   pagination=pagination,
+						   page=page
+						   )
 
 @app.route("/darkside")
 @app.route("/darkside/")
