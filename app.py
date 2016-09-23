@@ -29,6 +29,7 @@ mailchimp_api_key = os.environ['MAILCHIMP_API_KEY']
 upload_api_key = os.environ['UPLOAD_API_KEY']
 
 @app.route('/feed')
+@app.route('/feed/')
 def rss_feed():
 	#get data for rss feed:
 	conn = mysql.connect()
@@ -39,6 +40,34 @@ def rss_feed():
 	# now process to xml:
 	base_url = "http://quotes.stevearnett.com/"
 	feed = AtomFeed('Recent Quotes', feed_url=str(base_url+"feed"), url=str(base_url))
+	for quote in data:
+		title = 'Ridiculous. Quotes. (#'+str(quote[0])+")"
+		if quote[2]:
+			quote_text = (str(quote[1])+str(" - ")+str(quote[2]))
+			author = str(quote[2])
+		else:
+			author = ' '
+			quote_text = str(quote[1])
+		feed.add(unicode(title), unicode(quote_text),
+				 content_type='html',
+				 author=author,
+				 id=quote[0],
+				 url=("http://quotes.stevearnett.com/quote/"+str(quote[0])),
+				 updated=quote[5])
+	return feed.get_response()
+
+@app.route('/feed/daily')
+@app.route('/feed/daily/')
+def rss_feed_random():
+	#get data for rss feed:
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	query = ("select * from quotes.quotes where private = 0 and remove is NULL order by RAND() LIMIT 1;")
+	cursor.execute(query)
+	data = cursor.fetchall()
+	# now process to xml:
+	base_url = "http://quotes.stevearnett.com/"
+	feed = AtomFeed('Random Quote', feed_url=str(base_url+"feed"), url=str(base_url))
 	for quote in data:
 		title = 'Ridiculous. Quotes. (#'+str(quote[0])+")"
 		if quote[2]:
