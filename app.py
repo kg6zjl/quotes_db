@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*
 
-import os
+import os, datetime
 from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint, redirect, url_for, session
 from flask.views import View
 from flask_paginate import Pagination
 from werkzeug import generate_password_hash, check_password_hash
 from werkzeug.contrib.atom import AtomFeed
+
 try:
 	from flask.ext.mysql import MySQL
 except:
@@ -81,7 +82,8 @@ def rss_feed_random():
 				 author=author,
 				 id=quote[0],
 				 url=("http://quotes.stevearnett.com/quote/"+str(quote[0])),
-				 updated=quote[5])
+				 updated=(datetime.datetime.now())) # fool mailchimp into thinking this is new content
+				 #updated=quote[5])
 	return feed.get_response()	
 
 #write new quote to db
