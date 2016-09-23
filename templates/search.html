@@ -10,7 +10,11 @@
     <link href="../static/css/add_recipe.css" rel="stylesheet">
     <script src="../js/jquery-3.1.0.min.js"></script>
     <script src="../js/search.js"></script>
-
+    <script>
+    function goBack() {
+        window.history.back();
+    }
+    </script>
   </head>
  
   <body>
@@ -23,6 +27,7 @@
               <li role="presentation" class="active"><a href="/recent">Recent</a></li>
               <li role="presentation" class="active"><a href="/random">Random</a></li>
               <li role="presentation" class="active"><a href="/search">Search</a></li>
+              <li role="presentation" class="active"><a onclick="goBack()" href="#">Back</a>
               <!--<li role="presentation" class="active"><a onclick="goBack()" href="#">Back</a> -->
           </ul>
         </nav>
@@ -31,9 +36,9 @@
  
       <div class="jumbotron"> 
         <h1>Search</h1>
-        <form class="form-signin" method="POST">
-        <label for="searchText" class="sr-only">Search</label>
-        <input type="text" name="searchText" id="searchText" class="form-control" placeholder="Search" required autofocus>
+        <form action="/search/" class="form-signin" method="GET">
+        <label for="q" class="sr-only">Search</label>
+        <input type="text" name="q" id="q" class="form-control" placeholder="Search" required autofocus>
         <button id="btnSearch" class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
         </form>
       </div>
