@@ -7,4 +7,3 @@ Flask-Mail==0.9.1
 mailchimp==2.0.9
 Flask-Session==0.3.0
 Whoosh==2.7.4
-mysql-connector-python-cext==2.1.3
