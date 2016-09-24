@@ -246,43 +246,16 @@ def author(name=None):
 @app.route('/search/<q>',methods=['GET','POST'])
 @app.route('/search/',methods=['GET','POST'])
 def search_v2(q=None,darkside=False):
-	if request.method == 'POST': #request.method == 'POST' or 
-		if q == None:
-			searchString = request.form['q']
-		else:
-			searchString = q
-		searchString = searchString.replace("'", "\\'")
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		query = ("SELECT * FROM quotes.quotes WHERE private = 0 and remove is NULL and MATCH(quote) AGAINST('%s*' IN BOOLEAN MODE) ORDER BY MATCH(quote) AGAINST('%s*') DESC;") % (searchString,searchString)
-		cursor.execute(query)
-		data = cursor.fetchall()
-		if data:
-			return render_template('recent.html',data=(data))
-		else:
-			data=[('','"No results."',"Webserver")]
-			return render_template('recent.html',data=data)
-	elif request.method == 'GET':
-		try:
-			print q
+	try:
+		if request.method == 'POST': #request.method == 'POST' or 
 			if q == None:
-				searchString = request.args.get('q')
+				searchString = request.form['q']
 			else:
 				searchString = q
 			searchString = searchString.replace("'", "\\'")
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			try:
-				darkside = request.args.get('darkside')
-			except:
-				darkside = False
-			if darkside == 'True' or darkside == 'true':
-				private = 1
-			else:
-				private = 0
-			
-			query = ("SELECT * FROM quotes.quotes WHERE private = '%s' and remove is NULL and MATCH(quote) AGAINST('%s*' IN BOOLEAN MODE) ORDER BY MATCH(quote) AGAINST('%s*') DESC;") % (private,searchString,searchString)
-			
+			query = ("SELECT * FROM quotes.quotes WHERE private = 0 and remove is NULL and MATCH(quote) AGAINST('%s*' IN BOOLEAN MODE) ORDER BY MATCH(quote) AGAINST('%s*') DESC;") % (searchString,searchString)
 			cursor.execute(query)
 			data = cursor.fetchall()
 			if data:
@@ -290,8 +263,37 @@ def search_v2(q=None,darkside=False):
 			else:
 				data=[('','"No results."',"Webserver")]
 				return render_template('recent.html',data=data)
-		except:
-			return render_template('search.html')
+		elif request.method == 'GET':
+			try:
+				if q == None:
+					searchString = request.args.get('q')
+				else:
+					searchString = q
+				searchString = searchString.replace("'", "\\'")
+				conn = mysql.connect()
+				cursor = conn.cursor()
+				try:
+					darkside = request.args.get('darkside')
+				except:
+					darkside = False
+				if darkside == 'True' or darkside == 'true':
+					private = 1
+				else:
+					private = 0
+				
+				query = ("SELECT * FROM quotes.quotes WHERE private = '%s' and remove is NULL and MATCH(quote) AGAINST('%s*' IN BOOLEAN MODE) ORDER BY MATCH(quote) AGAINST('%s*') DESC;") % (private,searchString,searchString)
+				
+				cursor.execute(query)
+				data = cursor.fetchall()
+				if data:
+					return render_template('recent.html',data=(data))
+				else:
+					data=[('','"No results."',"Webserver")]
+					return render_template('recent.html',data=data)
+			except:
+				return render_template('search.html')
+	except:
+		return render_template('search.html')	
 	return render_template('search.html')
 
 @app.route('/')

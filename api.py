@@ -9,6 +9,7 @@ except:
 app = Flask(__name__)
 application = app
 
+
 #mysql = MySQL()
 #sess = Session()
 
@@ -42,7 +43,7 @@ def get_all_quotes(quoteID=None):
 
 @app.route('/api', methods=['GET'])
 @app.route('/api/v1.0/random', methods=['GET'])
-def get_all_quotes(quoteID=None):
+def random_api(quoteID=None):
 	#conn = mysql.connect()
 	#cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 	conn = mysql.connector.connect(user=sqlUser, password=sqlPass, host=sqlHost, database=sqlDb)
@@ -54,5 +55,5 @@ def get_all_quotes(quoteID=None):
 	return jsonify(quote=data)
 
 if __name__ == '__main__':
-	app.debug=True
+	#app.debug=True
 	app.run(host='0.0.0.0', port=5050)
