@@ -35,7 +35,7 @@ def rss_feed():
 	#get data for rss feed:
 	conn = mysql.connect()
 	cursor = conn.cursor()
-	query = ("select * from quotes.quotes where private = 0 and remove is NULL and created_at >= (DATE(NOW()) - INTERVAL 7 DAY) order by id DESC LIMIT 20;")
+	query = ("select * from quotes.quotes where private = 0 and remove is NULL having created_at > (DATE(NOW()) - INTERVAL 7 DAY) order by RAND() LIMIT 5;")
 	cursor.execute(query)
 	data = cursor.fetchall()
 	# now process to xml:
