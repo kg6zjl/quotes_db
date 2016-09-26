@@ -1,10 +1,8 @@
+# -*- coding: utf-8 -*
+
 from flask import Flask, jsonify
 from flask import Flask, render_template, request, json, abort, make_response, jsonify, Blueprint, redirect, url_for, session
 import mysql.connector, os
-try:
-	from flask.ext.mysql import MySQL
-except:
-	from flask_mysql import MySQL
 
 app = Flask(__name__)
 application = app
