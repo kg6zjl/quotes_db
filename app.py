@@ -6,11 +6,7 @@ from flask.views import View
 from flask_paginate import Pagination
 from werkzeug import generate_password_hash, check_password_hash
 from werkzeug.contrib.atom import AtomFeed
-
-try:
-	from flask.ext.mysql import MySQL
-except:
-	from flask_mysql import MySQL
+from flaskext.mysql import MySQL
 
 app = Flask(__name__)
 application = Flask(__name__)
