@@ -91,10 +91,10 @@ def input(key=None):
 		private = None
 		highdeas = None
 		if request.method == 'POST':
-			quote, author, private, high = request.form['quoteText'], request.form['quoteAuthor'], request.form['quotePrivate'], request.form['high=quoteHigh']
+			quote, author, private, highdeas = request.form['quoteText'], request.form['quoteAuthor'], request.form['quotePrivate'], request.form['high=quoteHigh']
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			query = ("insert into quotes (quote,name,private,highdeas) values ('%s', '%s', '%s', '%s');") % (quote.replace("'", "\\'"), author.replace("'", "\\'"), private, high)
+			query = ("insert into quotes (quote,name,private,highdeas) values ('%s', '%s', '%s', '%s');") % (quote.replace("'", "\\'"), author.replace("'", "\\'"), private, highdeas)
 			cursor.execute(query)
 			conn.commit()
 			return(redirect(url_for('recent'), code=302))
