@@ -95,8 +95,11 @@ def input(key=None):
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			query = ("insert into quotes (quote,name,private,highdeas) values ('%s', '%s', '%s', '%s');") % (quote.replace("'", "\\'"), author.replace("'", "\\'"), private, highdeas)
+			print query
 			cursor.execute(query)
+			print "executed query"
 			conn.commit()
+			print "commited query"
 			return(redirect(url_for('recent'), code=302))
 	else:
 		data=[('404','"Something broke."',"Webserver")]
