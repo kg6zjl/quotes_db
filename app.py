@@ -327,6 +327,24 @@ def addRecipe(): # read the posted values from the UI
 	else:
 		return json.dumps({'html':'<span>Enter the required fields</span>'})
 
+@app.route("/highdeas")
+@app.route("/highdeas/")
+@app.route("/highdeas/<quoteID>")
+def darkside(quoteID=None):
+	if quoteID:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		query = ("select * from quotes.quotes where highdeas = 1 AND id = '%s' and remove is NULL LIMIT 1;") % str(quoteID)
+		cursor.execute(query)
+		data = cursor.fetchall()
+	else:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		query = ("select * from quotes.quotes where highdeas = 1 and remove is NULL order by id DESC;")
+		cursor.execute(query)
+		data = cursor.fetchall()	
+	return render_template('recent.html',data=data,darkside=True)
+	
 @app.errorhandler(404)
 def not_found(error):
 	#to use, call: abort(404)
