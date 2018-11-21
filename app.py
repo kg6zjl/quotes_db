@@ -89,11 +89,12 @@ def input(key=None):
 		quote = None
 		author = None
 		private = None
+		highdeas = None
 		if request.method == 'POST':
-			quote, author, private = request.form['quoteText'], request.form['quoteAuthor'], request.form['quotePrivate']
+			quote, author, private, high = request.form['quoteText'], request.form['quoteAuthor'], request.form['quotePrivate'], request.form['high=quoteHigh']
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			query = ("insert into quotes (quote,name,private) values ('%s', '%s', '%s');") % (quote.replace("'", "\\'"), author.replace("'", "\\'"), private)
+			query = ("insert into quotes (quote,name,private,highdeas) values ('%s', '%s', '%s', '%s');") % (quote.replace("'", "\\'"), author.replace("'", "\\'"), private, high)
 			cursor.execute(query)
 			conn.commit()
 			return(redirect(url_for('recent'), code=302))
@@ -326,6 +327,24 @@ def addRecipe(): # read the posted values from the UI
 	else:
 		return json.dumps({'html':'<span>Enter the required fields</span>'})
 
+@app.route("/highdeas")
+@app.route("/highdeas/")
+@app.route("/highdeas/<quoteID>")
+def darkside(quoteID=None):
+	if quoteID:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		query = ("select * from quotes.quotes where highdeas = 1 AND id = '%s' and remove is NULL LIMIT 1;") % str(quoteID)
+		cursor.execute(query)
+		data = cursor.fetchall()
+	else:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		query = ("select * from quotes.quotes where highdeas = 1 and remove is NULL order by id DESC;")
+		cursor.execute(query)
+		data = cursor.fetchall()	
+	return render_template('recent.html',data=data,darkside=True)
+	
 @app.errorhandler(404)
 def not_found(error):
 	#to use, call: abort(404)
