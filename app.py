@@ -330,7 +330,7 @@ def addRecipe(): # read the posted values from the UI
 @app.route("/highdeas")
 @app.route("/highdeas/")
 @app.route("/highdeas/<quoteID>")
-def darkside(quoteID=None):
+def highdeas(quoteID=None):
 	if quoteID:
 		conn = mysql.connect()
 		cursor = conn.cursor()
